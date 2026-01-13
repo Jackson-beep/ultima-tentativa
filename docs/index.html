@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Tu é muito é Gay seu viado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Fonte estilo FNAF -->
+<link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  background: black;
+  overflow: hidden;
+  font-family: 'Shadows Into Light', cursive;
+}
+
+#hallucination {
+  position: fixed;
+  bottom: 0;
+  right: 10%;
+  width: 200px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+  z-index: 999998;
+  filter: brightness(0.7);
+}
+
+#start-screen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  font-family: Arial, sans-serif;
+}
+
+.start-box {
+  background: #0e0e0e;
+  border: 1px solid #333;
+  padding: 30px;
+  text-align: center;
+  color: #ddd;
+  width: 300px;
+  box-shadow: 0 0 40px black;
+}
+
+.start-box h2 {
+  margin-bottom: 20px;
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  top: -10px;
+  animation: fall linear forwards;
+  z-index: 9999999;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+  }
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: url("fundo.jpg") center/cover no-repeat;
+  animation: slowZoom 20s infinite alternate ease-in-out;
+}
+
+/* Escurecimento + vinheta */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 100%);
+  z-index: 1;
+}
+
+/* Flicker de luz */
+.flicker {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+  animation: flicker 0.15s infinite alternate;
+  z-index: 2;
+}
+
+/* Linhas VHS */
+.vhs {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.03),
+    rgba(255,255,255,0.03) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Ruído */
+.noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://i.imgur.com/8B7iQ7C.png");
+  opacity: 0.05;
+  animation: noiseMove 0.2s infinite;
+  z-index: 4;
+}
+
+/* Conteúdo */
+.content {
+  position: relative;
+  z-index: 999;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  color: 111;
+  padding: 40px 20px;
+}
+
+/* Texto superior */
+.top h1 {
+  font-size: 3rem;
+  color: #dde5da;
+}
+.top p {
+  opacity: 1.0;
+    color: white;
+}
+
+/* Cheque */
+.check {
+  position: relative;
+  max-width: 650px;
+  margin: auto;
+  transform: rotate(-2deg) scale(1.08);
+  z-index: 99999;
+}
+
+.check-border {
+  background: #cfd8cc;
+  padding: 18px;
+  border: 2px solid #5a6d63;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.95),
+    inset 0 0 0 1px rgba(0,0,0,0.4);
+  font-family: "Courier New", monospace;
+  position: relative;
+}
+
+/* dupla borda interna */
+.check-border::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(0,0,0,0.3);
+  pointer-events: none;
+}
+
+/* topo */
+.check-top {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.check-number {
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+/* linhas */
+.check-line-row {
+  position: relative;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.label {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-right: 5px;
+}
+
+.line {
+  display: inline-block;
+  border-bottom: 1px solid #333;
+  width: 180px;
+  vertical-align: middle;
+}
+
+.line.long {
+  width: 320px;
+}
+
+.hand {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 18px;
+}
+
+/* caixa valor */
+.amount-box {
+  float: right;
+  margin-top: -10px;
+  border: 1px solid #333;
+  padding: 4px 10px;
+  font-weight: bold;
+  background: #dde5da;
+}
+
+/* parte inferior */
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.micr {
+  margin-top: 8px;
+  font-family: monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+.pay-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.pay-left {
+  flex: 1;
+}
+
+.pay-right {
+  text-align: right;
+  min-width: 180px;
+}
+
+.amount-box {
+  display: inline-block;
+  margin-top: 4px;
+  border: 1px solid #333;
+  padding: 4px 10px;
+  font-weight: bold;
+  background: #cfd8cc;
+}
+
+/* animação flutuando */
+@keyframes paperFloat {
+  0%, 100% { transform: rotate(-2deg) scale(1.1) translateY(0px); }
+  50% { transform: rotate(-1.7deg) scale(1.1) translateY(-4px); }
+}
+
+/* brilho passando */
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%); }
+  100% { transform: translateX(100%) translateY(100%); }
+}
+
+/* Texto final */
+.bottom {
+  font-size: 2.5rem;
+  letter-spacing: 4px;
+color: #dde5da;
+}
+
+/* Animações */
+@keyframes flicker {
+  0% { opacity: 0.2; }
+  100% { opacity: 0.35; }
+}
+
+@keyframes slowZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+@keyframes noiseMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 100px 100px; }
+}
+
+/* ===========================
+   RESPONSIVIDADE (CELULAR)
+=========================== */
+@media (max-width: 768px) {
+
+  .start-box {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .top h1 {
+    font-size: 2rem;
+  }
+
+  .bottom {
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+  }
+
+  .check {
+    transform: rotate(-1deg) scale(1);
+    width: 100%;
+  }
+
+  .check-border {
+    padding: 12px;
+  }
+
+  .content {
+    padding: 20px 10px;
+  }
+
+  .check-line-row {
+    font-size: 11px;
+  }
+
+  .hand {
+    font-size: 15px;
+  }
+
+  .amount-box {
+    font-size: 12px;
+    padding: 2px 6px;
+  }
+
+  .pay-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pay-right {
+    text-align: left;
+  }
+
+  .scene {
+    background-position: center;
+  }
+}
+
+/* Celulares muito pequenos */
+@media (max-width: 400px) {
+  .top h1 {
+    font-size: 1.5rem;
+  }
+
+  .bottom {
+    font-size: 1.2rem;
+  }
+}
+
+  /* ====== GLITCH TRANSITION ====== */
+.glitch-out {
+  animation: glitchOut 0.6s steps(2, end) forwards;
+}
+
+@keyframes glitchOut {
+  0% {
+    transform: scale(1);
+    filter: none;
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(-10px);
+  }
+  40% {
+    transform: translateX(10px);
+    filter: contrast(200%) brightness(150%);
+  }
+  60% {
+    transform: translateX(-5px);
+    filter: hue-rotate(90deg);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+  /* =========================
+   GLITCH TRANSITION FULL
+========================= */
+
+.glitch-out {
+  animation: glitchOut 0.8s steps(2, end) forwards;
+}
+
+.flash {
+  animation: flashWhite 0.2s ease;
+}
+
+@keyframes flashWhite {
+  0% { background: white; }
+  100% { background: black; }
+}
+
+@keyframes glitchOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: none;
+  }
+
+  10% {
+    transform: translateX(-15px);
+  }
+
+  20% {
+    transform: translateX(15px);
+    filter: contrast(200%) saturate(200%);
+  }
+
+  30% {
+    transform: translateY(-10px);
+  }
+
+  40% {
+    filter: hue-rotate(90deg);
+  }
+
+  50% {
+    transform: translateX(-8px);
+  }
+
+  60% {
+    filter: blur(1px);
+  }
+
+  70% {
+    transform: translateX(8px);
+  }
+
+  80% {
+    filter: none;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+/* Separação RGB estilo defeito de câmera */
+#start-screen.glitch-out {
+  text-shadow:
+    -2px 0 red,
+    2px 0 cyan;
+}
+
+/* Tremida extra */
+.shake {
+  animation: shakeCam 0.15s infinite;
+}
+
+@keyframes shakeCam {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, 2px); }
+  100% { transform: translate(1px, -2px); }
+}
+
+</style>
+</head>
+<body>
+
+    <div id="start-screen">
+  <div class="start-box">
+    <h2>Fazbear Employment System</h2>
+
+    <input id="nameInput" type="text" placeholder="Digite seu nome">
+    <input id="dateInput" type="date" placeholder="Digite a data (ex: 11-12-xx)">
+
+    <button id="generateBtn"  tipe="button">Gerar cheque</button>
+  </div>
+</div>
+
+<div class="scene">
+  <div class="vignette"></div>
+  <div class="flicker"></div>
+  <div class="vhs"></div>
+  <div class="noise"></div>
+
+  <div class="content container">
+
+    <div class="top">
+
+     <h1>Good job, sport!</h1>
+      <p>(see you next week)</p>
+    </div>
+
+  <div class="check">
+
+  <div class="check-border">
+
+    <div class="check-top">
+      <span class="check-number">0123</span>
+    </div>
+
+    <div class="check-line-row">
+      <span class="label">DATE</span>
+      <span class="line"></span>
+      <span class="date" id="checkDate">11-12-xx</span>
+    </div>
+
+    <div class="pay-row">
+  <div class="pay-left">
+    <span class="label">PAY TO THE ORDER OF</span>
+    <span class="line long"></span>
+  </div>
+
+  <div class="pay-right">
+   <div class="hand" id="checkName">Mike Schmidt</div>
+    <div class="amount-box">$800.85</div>
+  </div>
+</div>
+    <div class="check-line-row">
+      <span class="hand">One beautiful Boobs - Fuck You</span>
+      <span class="line long"></span>
+    </div>
+
+    <div class="bottom-row">
+      <div class="left">
+        <div class="hand">Valued employee</div>
+        <div class="micr">|:000045678000  0000:| *0000</div>
+      </div>
+      <div class="right hand">Fazbear Entertainment</div>
+    </div>
+
+  </div>
+</div>
+
+    <div class="bottom">
+      FELIZ ANIVERSARIO
+    </div>
+
+  </div>
+</div>
+
+<script>
+document.getElementById("generateBtn").addEventListener("click", generateCheck);
+
+function generateCheck() {
+  const name = document.getElementById("nameInput").value;
+  const date = document.getElementById("dateInput").value;
+
+
+  if (!name || !date) {
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  // Atualiza dados no cheque
+  document.getElementById("checkName").textContent = name;
+  document.getElementById("checkDate").textContent = date;
+
+  // Some com a tela inicial
+const start = document.getElementById("start-screen");
+document.getElementById("glitchSound")?.play().catch(()=>{});
+// ativa efeitos
+start.classList.add("shake");
+
+setTimeout(() => {
+  start.classList.add("flash");
+}, 150);
+
+setTimeout(() => {
+  start.classList.add("glitch-out");
+}, 250);
+
+setTimeout(() => {
+  start.style.display = "none";
+}, 900);
+
+
+
+  // Sons
+  document.getElementById("fireworkSound").play();
+  document.getElementById("partyHorn").play();
+
+  // Confetes
+  launchConfetti();
+}
+
+function launchConfetti() {
+  for (let i = 0; i < 120; i++) {
+    const confetti = document.createElement("div");
+    confetti.classList.add("confetti");
+
+    confetti.style.left = Math.random() * window.innerWidth + "px";
+    confetti.style.animationDuration = (Math.random() * 2 + 2) + "s";
+    confetti.style.opacity = Math.random();
+    confetti.style.backgroundColor = randomColor();
+
+    document.body.appendChild(confetti);
+
+    setTimeout(() => confetti.remove(), 4000);
+  }
+}
+
+function randomColor() {
+  const colors = ["#ff3838", "#ffb400", "#32ff7e", "#18dcff", "#7d5fff", "#ff9ff3"];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+setInterval(() => {
+  const chance = Math.random();
+
+  if (chance > 0.70) { // ~15% de chance a cada ciclo
+    const ghost = document.getElementById("hallucination");
+
+    ghost.style.opacity = "1";
+
+    setTimeout(() => {
+      ghost.style.opacity = "0";
+    }, 200);
+  }
+}, 900);
+
+</script>
+
+<audio id="fireworkSound" src="Jesus Negão (Versão Original)(MP3_160K).mp3"></audio>
+<audio id="partyHorn" src="children-saying-yay-praise-and-worship-jesus-299607.mp3"></audio>
+<audio id="glitchSound" src="glitch.mp3"></audio>
+
+  
+<img id="hallucination" src="IMG_20251207_175819643_HDR~2.jpg">
+
+</body>
+
+</html>
